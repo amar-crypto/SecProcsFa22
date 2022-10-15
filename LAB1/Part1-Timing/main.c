@@ -54,8 +54,8 @@ int main (int ac, char **av) {
         // Step 2: measure the access latency
         dram_latency[i] = measure_one_block_access_time((uint64_t)target_buffer);
     }
-    clflush(target_buffer);
 
+        clflush(target_buffer);
     // ======
     // [1.4] TODO: Measure L2 Latency, store results in l2_latency array
     // ======
@@ -73,16 +73,16 @@ int main (int ac, char **av) {
        
 }
 
-    clflush(target_buffer);
+        clflush(target_buffer);
     // ======
     // [1.4] TODO: Measure L3 Latency, store results in l3_latency array
     // ======
     //
     for (int i=0; i<SAMPLES; i++){
+    tmp = target_buffer[0];
         // Step 2: measure the access latency
-        tmp = target_buffer[0];
-    for (int k=0; k < 10000; k++){
-    for (int j = 0; j < 8000; j++) {
+    for (long int k=0; k < 1000000; k++){
+    for (int j = 0; j < 5600; j++) {
         tmp = eviction_buffer[j*8];
     
     }
