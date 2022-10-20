@@ -9,10 +9,12 @@
 #define BUFF_SIZE (1<< 21)
 //#define BUFF_SIZE [TODO]
 
- uint64_t get_cache_set_index(ADDR_PTR phys_addr)
+ uint64_t get_index(ADDR_PTR phys_addr)
   {
-	    uint64_t mask = ((uint64_t) 1 << 15) - 1;
-	        return (phys_addr & mask) >> 6;
+	int index_and_offset_bits = 15;  
+	int block_offset = 6;
+        uint64_t mask = ((uint64_t) 1 << index_and_offset_bits) - 1;
+	return (phys_addr & mask) >> block_offset;
   }
 
 
@@ -27,7 +29,7 @@ int main(int argc, char **argv)
      exit(EXIT_FAILURE);
   }
 
- int set_id[8] = {0, 1, 2, 3, 4, 5, 6, 7};
+ int index_number[8] = {0, 1, 2, 3, 4, 5, 6, 7};
 
  uint64_t eviction_set[8][8];
 
@@ -46,14 +48,14 @@ int main(int argc, char **argv)
  uint64_t addr;
  clock_t start_time, current_time;
 
- for (int set_id_index = 0; set_id_index < 8; set_id_index++) {
-     int address_count = 0;
-     for (int set_index = 0; set_index < 512; set_index++) {
-       for (int way_index = 0; way_index < 8; way_index++) {
-	  addr = (uint64_t) (buffer + set_index * two_o_s + way_index * two_o);
-           if (get_cache_set_index(addr) == set_id[set_id_index]) {
-		 eviction_set[set_id_index][address_count] = addr;
-		 address_count++;
+ for (int index = 0; index < 8; index++) {
+     int count = 0;
+     for (int set = 0; set < 512; set++) {
+       for (int way = 0; way < 8; way++) {
+	  addr = (uint64_t) (buffer + set * two_o_s + way * two_o);
+           if (get_index(addr) == index_number[index]) {
+		 eviction_set[index][count] = addr;
+		 count++;
 	   }
          }	 
        }
@@ -61,36 +63,38 @@ int main(int argc, char **argv)
 
 
  *((char *)buf) = 1;
+ 
+ char text_buf[128];
 
- printf("Please type a message.\n");
  bool sending = true;
- uint64_t *temp_pointer;
- uint64_t tmp_point;
+ uint64_t *addr_pointer;
+ uint64_t temp_point;
+
 
  while (sending) {
-    char text_buf[128];
+    printf("Please type a message.\n");
     fgets(text_buf, sizeof(text_buf), stdin);
     int msg = string_to_int(text_buf);
-    int msg_bin[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+    int msg_binary[8] = {0, 0, 0, 0, 0, 0, 0, 0};
     int i = 0;
-  for ( ;msg > 0; ){
-    msg_bin[i++] = msg % 2;
+  
+    for ( ;msg > 0; ){
+    msg_binary[i++] = msg % 2;
     msg /= 2;
   }
-    size_t msg_len = 8;
-    for (int ind = 0; ind < msg_len; ind++) {
-       if (msg_bin[ind] == 0) {
+    for (int index = 0; index < 8; index++) {
+       if (msg_binary[index] == 0) {
           ;//No access
       }
     else {
    for (int way = 0; way < 8; way++){
     start_time = clock();
     current_time = start_time;
-     while (current_time - start_time < 250000) { 
-        uint64_t *temp_pointer = (uint64_t *) eviction_set[ind][way];
-	uint64_t tmp_point = *temp_pointer;
+     while (current_time - start_time < 200000) { 
+        uint64_t *addr_pointer = (uint64_t *) eviction_set[index][way];
+	uint64_t temp_point = *addr_pointer;
         //measure_one_block_access_time(eviction_set[ind][way]);
-	 //clflush(eviction_set[ind][way]);
+//	 clflush(eviction_set[index][way]);
      
          current_time = clock();
          }
