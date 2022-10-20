@@ -35,13 +35,6 @@ int main (int ac, char **av) {
     uint64_t *eviction_buffer = (uint64_t *)malloc(8192*8*sizeof(uint64_t));
 
     // Example: Measure L1 access latency, store results in l1_latency array
-    for (int i=0; i<SAMPLES; i++){
-        // Step 1: bring the target cache line into L1 by simply accessing the line
-        tmp = target_buffer[0];
-
-        // Step 2: measure the access latency
-        l1_latency[i] = measure_one_block_access_time((uint64_t)target_buffer);
-    }
 
     // ======
     // [1.4] TODO: Measure DRAM Latency, store results in dram_latency array
@@ -64,7 +57,7 @@ int main (int ac, char **av) {
     tmp = target_buffer[0];
         // Step 2: measure the access latency
     for (int k=0; k < 10000; k++){
-    for (int j = 0; j < 700; j++) {
+    for (int j = 0; j < 512; j++) {
         tmp = eviction_buffer[j*8];
 
     }
@@ -81,8 +74,8 @@ int main (int ac, char **av) {
     for (int i=0; i<SAMPLES; i++){
     tmp = target_buffer[0];
         // Step 2: measure the access latency
-    for (long int k=0; k < 1000000; k++){
-    for (int j = 0; j < 5600; j++) {
+    for (long int k=0; k < 100000; k++){
+    for (int j = 0; j < 6000; j++) {
         tmp = eviction_buffer[j*8];
     
     }
@@ -91,6 +84,13 @@ int main (int ac, char **av) {
        
 }
 
+    for (int i=0; i<SAMPLES; i++){
+        // Step 1: bring the target cache line into L1 by simply accessing the line
+        tmp = target_buffer[0];
+
+        // Step 2: measure the access latency
+        l1_latency[i] = measure_one_block_access_time((uint64_t)target_buffer);
+    }
 
     // Print the results to the screen
     // [1.5] Change print_results to print_results_for_python so that your code will work
