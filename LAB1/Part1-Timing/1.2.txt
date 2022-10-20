@@ -6,17 +6,17 @@ L2: 64
 L3: 64
 
 Total Size:
-L1: 32KB for Icache and Dcache
+L1: 32KB each for Icache and Dcache
 L2: 256KB
 L3: 8MB
 
 Number of Ways:
-L1: 8 for Icache and Dcache
+L1: 8 each for Icache and Dcache
 L2: 8
 L3: 16
 
 Number of Sets:
-L1: 64 for Icache and 64 for Dcache
+L1: 64 each for Icache and 64 for Dcache
 L2: 512
 L3: 8192
 
