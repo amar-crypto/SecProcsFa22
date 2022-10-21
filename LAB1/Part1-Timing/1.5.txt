@@ -1,3 +1,3 @@
 # Put answer in number of cycles please
-L2_L3_THRESHOLD: 27 , Less than or equal to 27 is L2, more than 27 is L3.
+L2_L3_THRESHOLD: 50 , Less than or equal to 50 is L2, more than 50 is L3.
 L3_DRAM_THRESHOLD: 200, Less than 200 is L3, more than 200 is DRAM. 
