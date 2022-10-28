@@ -17,7 +17,7 @@
 
 int main(int argc, char **argv)
 {
- int index_number[8] = {100, 1, 2, 3, 4, 5, 6, 7};          ////Set number for each bit
+ int index_number[8] = {100, 10, 50, 80, 200, 250, 150, 300};          ////Set number for each bit
 
  uint64_t eviction_set[8][8];            //Eviction Set
  
@@ -79,7 +79,7 @@ char ch;
 	    for (int way = 0; way < 8; way++){
             start_time = clock();
             current_time = start_time;
-	    while (current_time - start_time < 200) {
+	    while (current_time - start_time < 100000) {
             int time = measure_one_block_access_time(eviction_set[index][way]);
 	    
 	  // if (time < 700) {
@@ -88,7 +88,7 @@ char ch;
              //misses[ind][way]++;
 	     binary_number[index] = 1;
 	      
-//	     printf("For set %d we have miss\n", index);
+             printf("For set %d we have miss\n", index);
 	    }
 	   //}	    
 	    else

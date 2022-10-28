@@ -29,7 +29,7 @@ int main(int argc, char **argv)
      exit(EXIT_FAILURE);
   }
 
- int index_number[8] = {100, 1, 2, 3, 4, 5, 6, 7};        ////Index for each bit.
+ int index_number[8] = {100, 10, 50, 80, 200, 250, 150, 300};          ////Set number for each bit
 
  uint64_t eviction_set[8][8];          //Eviction set Array store the Address
 
@@ -91,7 +91,7 @@ int main(int argc, char **argv)
    for (int way = 0; way < 8; way++){
     start_time = clock();
     current_time = start_time;
-     while (current_time - start_time < 200000) {                     ////For each line of particular set evict multiple times. 
+     while (current_time - start_time < 100000) {                     ////For each line of particular set evict multiple times. 
        addr_pointer = (uint64_t *) eviction_set[index][way];
        temp_point = *addr_pointer;
 //          measure_one_block_access_time(eviction_set[index][way]);
