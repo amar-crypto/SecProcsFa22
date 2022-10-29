@@ -41,7 +41,7 @@ int run_attacker(int kernel_fd, char *shared_memory) {
     char leaked_str[LAB2_SECRET_MAX_LEN];
     size_t current_offset = 0;
     int access_time;
-    char leaked_byte_array[5];
+    char leaked_byte_array[3];
 
     printf("Launching attacker\n");
 

