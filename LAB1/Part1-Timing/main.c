@@ -78,7 +78,7 @@ int main (int ac, char **av) {
     for (int j = 0; j < 6000; j++) {
         tmp = eviction_buffer[j*8];
     
-    }
+      }
     }
         l3_latency[i] = measure_one_block_access_time((uint64_t)target_buffer);
        
